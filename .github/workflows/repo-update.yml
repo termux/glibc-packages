@@ -1,0 +1,118 @@
+name: Update repo
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - '.github/workflows/repo-update.yml'
+  schedule:
+    - cron:  '0,30 0-23 * * *'
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repository
+      run: |
+        git clone https://github.com/termux/glibc-packages.git
+        mv glibc-packages glibc-packages-mirror
+    - name: Clone root repository
+      run: git clone https://github.com/termux-pacman/glibc-packages.git
+    - name: Update repo
+      run: |
+        info() {
+          echo "==> $1"
+        }
+        commit() {
+          echo "-> $1"
+        }
+        
+        # Edit
+        info "Edit"
+        cd glibc-packages-mirror
+        rm -fr */
+        cd ../glibc-packages
+        cp -r * ../glibc-packages-mirror
+        
+        # Get list pkg
+        info "Get list pkg"
+        cd ../glibc-packages-mirror
+        list_files=" "
+        for i in $(git status -s gpkg | awk '{print $2}'); do
+          dir_sp=(${i//// })
+          if [[ ! $(echo "$list_files" | grep " ${dir_sp[0]}/${dir_sp[1]} ") ]]; then
+            list_files+="${dir_sp[0]}/${dir_sp[1]} "
+          fi
+        done
+        list_files=($list_files)
+        
+        # Sort list pkg
+        info "Sort list pkg"
+        cd ../glibc-packages
+        declare -A list_values
+        list_sort=""
+        list_sha=""
+        for i in ${list_files[@]}; do
+          sha_file=$(git log -n 1 --pretty=format:%H -- $i)
+          value="$(git rev-list --count $sha_file)"
+          list_values[${value}]=$((${list_values[${value}]}+1))
+          list_sort+="${value}-${list_values[${value}]} "
+          list_sha+="${sha_file} "
+        done
+        list_sort=($list_sort)
+        list_sha=($list_sha)
+        copy_list_sort=($(sort -n <(printf "%s\n" "${list_sort[@]}")))
+        search_index() {
+          for i in "${!list_sort[@]}"; do
+            if [[ "${list_sort[$i]}" = "${1}" ]]; then
+              echo "${i}";
+            fi
+          done
+        }
+        sort_list_files=""
+        for i in ${copy_list_sort[@]}; do
+          index=$(search_index "$i")
+          if [[ "${i#*-}" = "1" ]]; then
+            sort_list_files+=" ${list_sha[$index]}###"
+          else
+            sort_list_files+="&&"
+          fi
+          sort_list_files+="${list_files[$index]}"
+        done
+        
+        # Start upload
+        info "Start upload"
+        cd ../glibc-packages-mirror
+        needbuild=false
+        if $(git log -1 --pretty=%B | grep -q '%needbuild'); then
+          needbuild=true
+        fi
+        git config --global user.name "Termux Github Actions"
+        git config --global user.email "contact@termux.dev"
+        git remote set-url origin "https://termuxbot2:${{ secrets.TERMUXBOT2_TOKEN }}@github.com/termux/glibc-packages.git"
+        commit "Update system repo"
+        git add .
+        git reset README.md README-old.md gpkg-dev script gpkg
+        {
+          git commit -m "Update repo"
+          git push origin main
+        } || true
+        commit "Update repo packages"
+        for i in $sort_list_files; do
+          i_sp=(${i//###/ })
+          commit "    ${i_sp[1]}"
+          cd ../glibc-packages
+          commit_file="$(git show -s --format=%B ${i_sp[0]})"
+          cd ../glibc-packages-mirror
+          git add $(echo ${i_sp[1]} | sed 's/&&/ /g')
+          {
+            # TEST
+            commit "$commit_file"
+            #if $needbuild; then
+            #  git commit -m "$(echo $commit_file | sed '/%ci:no-build/d; /\[skip ci\]/d')"
+            #else
+            #  git commit -m "$commit_file"
+            #fi
+            #git push origin main
+          } || true
+        done
