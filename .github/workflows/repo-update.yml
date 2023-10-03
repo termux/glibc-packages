@@ -94,7 +94,7 @@ jobs:
         git add .
         git reset README.md README-old.md gpkg-dev script gpkg
         {
-          git commit -m "Update repo"
+          git commit -m "update repo contents"
           git push origin main
         } || true
         commit "Update repo packages"

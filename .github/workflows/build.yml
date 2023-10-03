@@ -222,3 +222,66 @@ jobs:
       with:
         name: debs-${{ matrix.target_arch }}-${{ github.sha }}
         path: ./artifacts
+
+  upload:
+    concurrency: ${{ github.workflow }}
+    permissions:
+      contents: read
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+    - name: Get *.deb files
+      uses: actions/download-artifact@v3
+      with:
+        path: ./
+    - name: Upload to packages.termux.dev
+      env:
+        REPOSITORY_URL: https://packages.termux.dev/aptly-api
+      run: |
+        GITHUB_SHA=${{ github.sha }}
+        APTLY_API_AUTH=${{ secrets.APTLY_API_AUTH }}
+        GPG_PASSPHRASE=${{ secrets.GPG_PASSPHRASE }}
+
+        source scripts/aptly_api.sh
+
+        for archive in debs-*/debs-{aarch64,arm,i686,x86_64}-${{ github.sha }}.tar; do
+          tar xf "$archive"
+        done
+
+        for repo in $(jq --raw-output 'del(.pkg_format) | keys | .[]' repo.json); do
+          export REPOSITORY_NAME=$(jq --raw-output '.["'$repo'"].name' repo.json)
+          export REPOSITORY_DISTRIBUTION=$(jq --raw-output '.["'$repo'"].distribution' repo.json)
+
+          # Upload file to temporary directory.
+          uploaded_files=false
+          shopt -s nullglob
+
+          if [ -f debs/built_${REPOSITORY_NAME}_packages.txt ]; then
+            for filename in $(cat debs/built_${REPOSITORY_NAME}_packages.txt | sed -E 's/(..*)/debs\/\1_\*.deb debs\/\1-static_\*.deb/g'); do
+              if ! aptly_upload_file "$filename"; then
+                exit 1
+              fi
+
+              uploaded_files=true
+            done
+            shopt -u nullglob
+
+            # Publishing repository changes.
+            if [ "$uploaded_files" = "true" ]; then
+              if ! aptly_add_to_repo; then
+                exit 1
+              fi
+
+              # Usually temporary directory is deleted automatically, but in certain cases it is left.
+              aptly_delete_dir
+
+              # Final part to make changes appear in web root.
+              if ! aptly_publish_repo; then
+                exit 1
+              fi
+            fi
+          fi
+        done
