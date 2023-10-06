@@ -77,7 +77,7 @@ jobs:
           # Useful for pull requests submitting changes for both build environment and packages.
           if grep -qP '^scripts/(Dockerfile|properties\.sh|setup-android-sdk\.sh|setup-cgct\.sh|setup-ubuntu\.sh)$' <<< "$CHANGED_FILES"; then
             echo "Detected changes for environment setup scripts. Building custom Docker image now."
-            docker build -t ghcr.io/termux/package-builder:latest .
+            docker build -t ghcr.io/termux/package-builder-cgct:latest .
           fi
 
           for repo_path in $(jq --raw-output 'del(.pkg_format) | keys | .[]' repo.json); do
