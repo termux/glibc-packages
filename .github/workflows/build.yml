@@ -252,15 +252,17 @@ jobs:
         done
 
         for repo in $(jq --raw-output 'del(.pkg_format) | keys | .[]' repo.json); do
-          export REPOSITORY_NAME=$(jq --raw-output '.["'$repo'"].name' repo.json)
-          export REPOSITORY_DISTRIBUTION=$(jq --raw-output '.["'$repo'"].distribution' repo.json)
+          export REPOSITORY_NAME_DB=$(jq --raw-output '.["'$repo'"].name' repo.json)
+          #export REPOSITORY_DISTRIBUTION=$(jq --raw-output '.["'$repo'"].distribution' repo.json)
+          export REPOSITORY_NAME=termux-glibc
+          export REPOSITORY_DISTRIBUTION=glibc
 
           # Upload file to temporary directory.
           uploaded_files=false
           shopt -s nullglob
 
-          if [ -f debs/built_${REPOSITORY_NAME}_packages.txt ]; then
-            for filename in $(cat debs/built_${REPOSITORY_NAME}_packages.txt | sed -E 's/(..*)/debs\/\1_\*.deb debs\/\1-static_\*.deb/g'); do
+          if [ -f debs/built_${REPOSITORY_NAME_DB}_packages.txt ]; then
+            for filename in $(cat debs/built_${REPOSITORY_NAME_DB}_packages.txt | sed -E 's/(..*)/debs\/\1_\*.deb debs\/\1-static_\*.deb/g'); do
               if ! aptly_upload_file "$filename"; then
                 exit 1
               fi
