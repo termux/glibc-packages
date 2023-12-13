@@ -102,4 +102,3 @@ termux_step_make_install() {
 	ln -sf $PATH_DYNAMIC_LINKER $TERMUX_PREFIX/bin/ld.so
 	ln -sf $PATH_DYNAMIC_LINKER $TERMUX_PREFIX/lib/ld.so
 }
-

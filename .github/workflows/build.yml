@@ -237,6 +237,8 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         path: ./
+    - name: Get files from termux-packages repository
+      run: ./get-build-package.sh
     - name: Upload to packages.termux.dev
       env:
         REPOSITORY_URL: https://packages.termux.dev/aptly-api
