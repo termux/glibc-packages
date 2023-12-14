@@ -111,7 +111,7 @@ jobs:
             if $needbuild; then
               git commit -m "$(echo $commit_file | sed '/%ci:no-build/d; /\[skip ci\]/d')"
             else
-              git commit -m "$commit_file [skip ci]"
+              git commit -m "$commit_file"
             fi
             git push origin main
           } || true
