@@ -22,3 +22,4 @@ termux_step_make_install() {
 
 	rm -r "$TERMUX_PREFIX/include/drm"
 }
+
