@@ -11,3 +11,4 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --disable-exec-static-tramp
 --enable-pax_emutramp
 "
+
