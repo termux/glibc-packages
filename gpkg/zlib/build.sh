@@ -10,4 +10,3 @@ TERMUX_PKG_DEPENDS="glibc"
 termux_step_configure() {
 	"$TERMUX_PKG_SRCDIR/configure" --prefix=$TERMUX_PREFIX
 }
-
