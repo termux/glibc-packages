@@ -52,3 +52,4 @@ termux_step_post_massage() {
 		ln -s ../$_file ncursesw
 	done
 }
+

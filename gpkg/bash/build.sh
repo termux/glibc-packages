@@ -63,3 +63,4 @@ termux_step_post_make_install() {
 	sed -e "s|@TERMUX_PREFIX@|$TERMUX_PREFIX|g" \
 		$TERMUX_PKG_BUILDER_DIR/system.profile > $TERMUX_PREFIX/etc/profile
 }
+
