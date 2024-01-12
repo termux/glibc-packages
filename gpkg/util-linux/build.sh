@@ -38,4 +38,3 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 termux_step_configure() {
 	termux_step_configure_meson
 }
-
