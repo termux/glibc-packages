@@ -68,4 +68,3 @@ EOS
 INPUT( $TERMUX_PREFIX/lib/libopcodes.a -lbfd )
 EOS
 }
-
