@@ -171,4 +171,3 @@ termux_step_make_install() {
 		rm -fr $TERMUX_PREFIX/lib32
 	fi
 }
-
