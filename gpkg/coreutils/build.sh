@@ -13,3 +13,4 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --with-openssl
 --enable-no-install-program=groups,hostname,kill,uptime
 "
+

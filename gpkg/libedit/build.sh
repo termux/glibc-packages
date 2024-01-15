@@ -7,3 +7,4 @@ TERMUX_PKG_SRCURL=https://thrysoee.dk/editline/libedit-${TERMUX_PKG_VERSION}.tar
 TERMUX_PKG_SHA256=4ee8182b6e569290e7d1f44f0f78dac8716b35f656b76528f699c69c98814dad
 TERMUX_PKG_DEPENDS="ncurses-glibc"
 TERMUX_PKG_RM_AFTER_INSTALL="glibc/share/man/man3/history.3"
+
