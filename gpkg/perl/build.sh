@@ -57,4 +57,3 @@ termux_step_post_make_install() {
 		-e '/(mbuildpl_arg =>/ s/""/"installdirs=site"/' \
 		-i "${TERMUX_PREFIX}/share/perl5/CPAN/FirstTime.pm"
 }
-
