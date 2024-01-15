@@ -255,17 +255,15 @@ jobs:
         done
 
         for repo in $(jq --raw-output 'del(.pkg_format) | keys | .[]' repo.json); do
-          export REPOSITORY_NAME_DB=$(jq --raw-output '.["'$repo'"].name' repo.json)
-          #export REPOSITORY_DISTRIBUTION=$(jq --raw-output '.["'$repo'"].distribution' repo.json)
-          export REPOSITORY_NAME=termux-glibc
-          export REPOSITORY_DISTRIBUTION=glibc
+          export REPOSITORY_NAME=$(jq --raw-output '.["'$repo'"].name' repo.json)
+          export REPOSITORY_DISTRIBUTION=$(jq --raw-output '.["'$repo'"].distribution' repo.json)
 
           # Upload file to temporary directory.
           uploaded_files=false
           shopt -s nullglob
 
-          if [ -f debs/built_${REPOSITORY_NAME_DB}_packages.txt ]; then
-            for filename in $(cat debs/built_${REPOSITORY_NAME_DB}_packages.txt | sed -E 's/(..*)/\1\n\1-static/g' | awk '{system("bash -c '\''source scripts/utils/package/package.sh; ls debs/$(package__is_package_name_have_glibc_prefix "$1" && echo "$1" || package__add_prefix_glibc_to_package_name "$1")_*.deb 2>/dev/null'\''")}'); do
+          if [ -f debs/built_${REPOSITORY_NAME}_packages.txt ]; then
+            for filename in $(cat debs/built_${REPOSITORY_NAME}_packages.txt | sed -E 's/(..*)/\1\n\1-static/g' | awk '{system("bash -c '\''source scripts/utils/package/package.sh; ls debs/$(package__is_package_name_have_glibc_prefix "$1" && echo "$1" || package__add_prefix_glibc_to_package_name "$1")_*.deb 2>/dev/null'\''")}'); do
               if ! aptly_upload_file "$filename"; then
                 exit 1
               fi
