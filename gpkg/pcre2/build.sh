@@ -14,3 +14,4 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --enable-pcre2grep-libbz2
 --enable-pcre2test-libreadline
 "
+

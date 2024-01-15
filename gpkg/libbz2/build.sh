@@ -44,3 +44,4 @@ termux_step_make_install() {
 	sed -e "s|@TERMUX_PREFIX@|$TERMUX_PREFIX|g" \
 		${TERMUX_PKG_BUILDER_DIR}/bzip2.pc > $TERMUX_PREFIX/lib/pkgconfig/bzip2.pc
 }
+
