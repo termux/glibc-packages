@@ -7,4 +7,3 @@ TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://www.libssh2.org/download/libssh2-$TERMUX_PKG_VERSION.tar.gz
 TERMUX_PKG_SHA256=3736161e41e2693324deb38c26cfdc3efe6209d634ba4258db1cecff6a5ad461
 TERMUX_PKG_DEPENDS="openssl-glibc, zlib-glibc"
-
