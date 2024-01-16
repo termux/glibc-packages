@@ -10,3 +10,4 @@ TERMUX_PKG_DEPENDS="libtirpc-glibc"
 termux_step_pre_configure() {
 	autoreconf -fiv
 }
+
