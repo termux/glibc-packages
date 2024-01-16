@@ -25,4 +25,3 @@ termux_step_make_install() {
 		make -j 1 install
 	fi
 }
-
