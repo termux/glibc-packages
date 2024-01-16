@@ -12,3 +12,4 @@ TERMUX_PKG_CONFFILES="glibc/etc/rhashrc"
 termux_step_post_make_install() {
 	make -C librhash install-lib-headers install-lib-shared install-so-link
 }
+

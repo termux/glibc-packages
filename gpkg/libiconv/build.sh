@@ -22,3 +22,4 @@ termux_step_post_make_install() {
 	mv $TERMUX_PREFIX/include/libiconv-d/* $TERMUX_PREFIX/include
 	rm -fr $TERMUX_PREFIX/include/libiconv-d
 }
+
