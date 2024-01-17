@@ -9,4 +9,3 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/app/xkbcomp-$
 TERMUX_PKG_SHA256=fa50d611ef41e034487af7bd8d8c718df53dd18002f591cca16b0384afc58e98
 TERMUX_PKG_DEPENDS="libxkbfile-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-xkbcomp-glibc"
-

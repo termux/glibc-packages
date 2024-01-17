@@ -14,4 +14,3 @@ termux_step_post_make_install() {
             -e "s|@TERMUX_PKG_VERSION@|$TERMUX_PKG_VERSION|" \
             $TERMUX_PKG_BUILDER_DIR/lame.pc.in > ${_pkgconfig_dir}/lame.pc
 }
-

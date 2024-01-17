@@ -12,4 +12,3 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="-Dfreetype2:default_library=shared"
 termux_step_configure() {
 	termux_step_configure_meson
 }
-

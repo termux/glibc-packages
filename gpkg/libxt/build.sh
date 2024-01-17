@@ -9,4 +9,3 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libXt-${T
 TERMUX_PKG_SHA256=52820b3cdb827d08dc90bdfd1b0022a3ad8919b57a39808b12591973b331bf91
 TERMUX_PKG_DEPENDS="libsm-glibc, libx11-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc"
-

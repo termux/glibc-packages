@@ -18,4 +18,3 @@ termux_step_pre_configure() {
 termux_step_post_make_install() {
 	ln -sf libfakeroot/fakechroot/libfakechroot.so $TERMUX_PREFIX/lib
 }
-

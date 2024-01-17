@@ -15,4 +15,3 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 termux_step_post_make_install() {
 	ln -sf libfakeroot/libfakeroot.so $TERMUX_PREFIX/lib
 }
-

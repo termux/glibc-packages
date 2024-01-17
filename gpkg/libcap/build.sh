@@ -17,4 +17,3 @@ termux_step_make() {
 termux_step_make_install() {
 	make CC="$CC" prefix="$TERMUX_PREFIX" RAISE_SETFCAP=no lib=/lib install
 }
-

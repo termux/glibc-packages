@@ -9,4 +9,3 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libXi-${T
 TERMUX_PKG_SHA256=89bfc0e814f288f784202e6e5f9b362b788ccecdeb078670145eacd8749656a7
 TERMUX_PKG_DEPENDS="libxext-glibc, libxfixes-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorgproto-glibc, xorg-util-macros-glibc"
-

@@ -9,4 +9,3 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libXaw-${
 TERMUX_PKG_SHA256=ab35f70fde9fb02cc71b342f654846a74328b74cb3a0703c02d20eddb212754a
 TERMUX_PKG_DEPENDS="libxmu-glibc, libxpm-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc"
-

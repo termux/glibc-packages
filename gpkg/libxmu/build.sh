@@ -9,4 +9,3 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libXmu-${
 TERMUX_PKG_SHA256=210de3ab9c3e9382572c25d17c2518a854ce6e2c62c5f8315deac7579e758244
 TERMUX_PKG_DEPENDS="libxext-glibc, libxt-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc"
-

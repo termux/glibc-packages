@@ -9,4 +9,3 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/app/xclock-${
 TERMUX_PKG_SHA256=df7ceabf8f07044a2fde4924d794554996811640a45de40cb12c2cf1f90f742c
 TERMUX_PKG_DEPENDS="libx11-glibc, libxmu-glibc, libxaw-glibc, libxrender-glibc, libxft-glibc, libxkbfile-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc"
-

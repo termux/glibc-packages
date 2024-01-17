@@ -7,4 +7,3 @@ TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://mirrors.kernel.org/gnu/nettle/nettle-${TERMUX_PKG_VERSION}.tar.gz
 TERMUX_PKG_SHA256=ccfeff981b0ca71bbd6fbcb054f407c60ffb644389a5be80d6716d5b550c6ce3
 TERMUX_PKG_DEPENDS="libgmp-glibc, gcc-libs-glibc"
-

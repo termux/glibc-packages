@@ -11,4 +11,3 @@ TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc, xtrans-glibc"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --disable-xf86bigfont
 "
-

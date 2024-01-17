@@ -10,4 +10,3 @@ TERMUX_PKG_DEPENDS="glibc, bash-glibc"
 termux_step_pre_configure() {
 	autoreconf -vfi
 }
-

@@ -10,4 +10,3 @@ TERMUX_PKG_DEPENDS="glibc, bash-glibc"
 termux_step_post_make_install() {
 	ln -sf pkgconf $TERMUX_PREFIX/bin/pkg-config
 }
-

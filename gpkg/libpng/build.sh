@@ -14,4 +14,3 @@ termux_step_post_make_install() {
 		install -m0755 png2pnm pnm2png "${TERMUX_PREFIX}/bin/"
 	)
 }
-
