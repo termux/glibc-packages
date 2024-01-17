@@ -9,3 +9,4 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/xtrans-${
 TERMUX_PKG_SHA256=1ba4b703696bfddbf40bacf25bce4e3efb2a0088878f017a50e9884b0c8fb1bd
 TERMUX_PKG_NO_DEVELSPLIT=true
 TERMUX_PKG_PLATFORM_INDEPENDENT=true
+

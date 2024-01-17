@@ -12,3 +12,4 @@ TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 PYTHON=python${TERMUX_PYTHON_VERSION}
 am_cv_python_pythondir=$TERMUX_PYTHON_HOME/site-packages
 "
+

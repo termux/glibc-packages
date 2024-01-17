@@ -14,3 +14,4 @@ termux_step_pre_configure() {
 		CFLAGS+=" -fno-stack-protector"
 	fi
 }
+

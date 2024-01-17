@@ -7,3 +7,4 @@ TERMUX_PKG_SRCURL=https://mirrors.kernel.org/gnu/grep/grep-${TERMUX_PKG_VERSION}
 TERMUX_PKG_SHA256=1db2aedde89d0dea42b16d9528f894c8d15dae4e190b59aecc78f5a951276eab
 TERMUX_PKG_DEPENDS="glibc, pcre2-glibc"
 TERMUX_PKG_ESSENTIAL=true
+

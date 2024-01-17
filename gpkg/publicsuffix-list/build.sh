@@ -35,3 +35,4 @@ termux_step_make_install() {
 	install -Dm 644 public_suffix_list.dat tests/test_psl.txt -t "$TERMUX_PREFIX/share/publicsuffix"
 	ln -s public_suffix_list.dat "$TERMUX_PREFIX/share/publicsuffix/effective_tld_names.dat"
 }
+

@@ -7,3 +7,4 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/archive/individual/app/xmessage-$
 TERMUX_PKG_SHA256=d2eac545f137156b960877e052fcc8e29795ed735c02f7690fd7b439e6846a12
 TERMUX_PKG_DEPENDS="libxaw-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc"
+

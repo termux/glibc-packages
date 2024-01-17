@@ -11,3 +11,4 @@ TERMUX_PKG_PLATFORM_INDEPENDENT=true
 TERMUX_PKG_RM_AFTER_INSTALL="
 glibc/share/bash-completion/completions/makepkg
 "
+

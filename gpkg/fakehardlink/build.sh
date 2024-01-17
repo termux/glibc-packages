@@ -15,3 +15,4 @@ termux_step_make() {
 	install -m755 ${TERMUX_PKG_BUILDER_DIR}/fakehardlink ${TERMUX_PREFIX}/bin
 	sed -i "s|@TERMUX_PREFIX@|$TERMUX_PREFIX|g; s|@TERMUX_PKG_VERSION@|$TERMUX_PKG_VERSION|g" ${TERMUX_PREFIX}/bin/fakehardlink
 }
+
