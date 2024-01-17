@@ -1,21 +1,21 @@
 {
-  "pkg_format": "debian",
+  "pkg_format": "pacman",
   "gpkg": {
-    "name": "termux-glibc",
-    "distribution": "glibc",
-    "component": "stable",
-    "url": "https://packages-cf.termux.dev/apt/termux-glibc"
+    "name": "gpkg",
+    "distribution": "gpkg",
+    "component": "gpkg",
+    "url": "https://service.termux-pacman.dev/gpkg"
   },
   "packages": {
-    "name": "termux-main",
-    "distribution": "stable",
+    "name": "main",
+    "distribution": "main",
     "component": "main",
-    "url": "https://packages-cf.termux.dev/apt/termux-main"
+    "url": "https://service.termux-pacman.dev/main"
   },
   "x11-packages": {
-    "name": "termux-x11",
+    "name": "x11",
     "distribution": "x11",
-    "component": "main",
-    "url": "https://packages-cf.termux.dev/apt/termux-x11"
+    "component": "x11",
+    "url": "https://service.termux-pacman.dev/x11"
   }
 }
