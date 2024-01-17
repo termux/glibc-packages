@@ -81,6 +81,7 @@ jobs:
         done
         
         # Start upload
+        exit 0
         info "Start upload"
         cd ../glibc-packages-mirror
         needbuild=false
