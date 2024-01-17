@@ -7,3 +7,4 @@ TERMUX_PKG_SRCURL=https://github.com/rockdaboot/libpsl/releases/download/${TERMU
 TERMUX_PKG_SHA256=e35991b6e17001afa2c0ca3b10c357650602b92596209b7492802f3768a6285f
 TERMUX_PKG_DEPENDS="libidn2-glibc, libunistring-glibc"
 TERMUX_PKG_BUILD_DEPENDS="publicsuffix-list-glibc"
+

@@ -7,3 +7,4 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libpciacc
 TERMUX_PKG_SHA256=74283ba3c974913029e7a547496a29145b07ec51732bbb5b5c58d5025ad95b73
 TERMUX_PKG_DEPENDS="zlib-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorg-util-macros-glibc"
+

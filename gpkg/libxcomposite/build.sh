@@ -9,3 +9,4 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libXcompo
 TERMUX_PKG_SHA256=fe40bcf0ae1a09070eba24088a5eb9810efe57453779ec1e20a55080c6dc2c87
 TERMUX_PKG_DEPENDS="libxfixes-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorgproto-glibc, xorg-util-macros-glibc"
+

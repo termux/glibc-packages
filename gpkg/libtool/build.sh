@@ -15,3 +15,4 @@ TERMUX_PKG_NO_STATICSPLIT=true
 termux_step_post_make_install() {
 	sed -i "s#\(\"\| \|'\|\:\|\!\|\-\)\(/usr/bin/\|/bin/\)#\1$PREFIX/bin/#g" $TERMUX_PREFIX/bin/{libtool,libtoolize}
 }
+

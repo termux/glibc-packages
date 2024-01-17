@@ -7,3 +7,4 @@ TERMUX_PKG_SRCURL=https://xorg.freedesktop.org/releases/individual/lib/libXrende
 TERMUX_PKG_SHA256=bc53759a3a83d1ff702fb59641b3d2f7c56e05051fa0cfa93501166fa782dc24
 TERMUX_PKG_DEPENDS="libx11-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorgproto-glibc"
+

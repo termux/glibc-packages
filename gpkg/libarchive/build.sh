@@ -18,3 +18,4 @@ termux_step_post_make_install() {
 	sed -i '/^Requires\.private:/s/ iconv//' \
 		$TERMUX_PREFIX/lib/pkgconfig/libarchive.pc
 }
+

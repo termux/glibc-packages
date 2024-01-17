@@ -10,3 +10,4 @@ TERMUX_PKG_SHA256=1ad5b065375f4a85915aa60611cc6407c060492a214d7f9daf214be752c3b4
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="libx11-glibc, libxext-glibc, libxrender-glibc"
 TERMUX_PKG_BUILD_DEPENDS="xorgproto-glibc, xorg-util-macros-glibc"
+
