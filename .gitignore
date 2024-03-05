@@ -6,3 +6,4 @@ clean.sh
 /scripts/
 /output/
 /termux-packages/
+/result-checking/

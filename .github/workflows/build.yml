@@ -33,7 +33,7 @@ jobs:
         fetch-depth: 1000
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2.2.0
+      uses: docker/setup-qemu-action@v3.0.0
 
     - name: Get files from termux-packages repository
       run: ./get-build-package.sh
@@ -248,7 +248,17 @@ jobs:
         GPG_PASSPHRASE=${{ secrets.GPG_PASSPHRASE }}
 
         source scripts/aptly_api.sh
-        #source scripts/utils/package/package.sh
+        source scripts/utils/package/package.sh
+
+        get_list_pkgs() {
+          for i in $(cat debs/built_${REPOSITORY_NAME}_packages.txt | sed -E 's/(..*)/\1\n\1-static/g'); do
+            local pkgname="${i}"
+            if ! package__is_package_name_have_glibc_prefix "$pkgname"; then
+              pkgname=$(package__add_prefix_glibc_to_package_name "$pkgname")
+            fi
+            ls debs/${pkgname}_*.deb 2>/dev/null
+          done
+        }
 
         for archive in debs-*/debs-{aarch64,arm,i686,x86_64}-${{ github.sha }}.tar; do
           tar xf "$archive"
@@ -263,9 +273,9 @@ jobs:
           shopt -s nullglob
 
           if [ -f debs/built_${REPOSITORY_NAME}_packages.txt ]; then
-            for filename in $(cat debs/built_${REPOSITORY_NAME}_packages.txt | sed -E 's/(..*)/\1\n\1-static/g' | awk '{system("bash -c '\''source scripts/utils/package/package.sh; ls debs/$(package__is_package_name_have_glibc_prefix "$1" && echo "$1" || package__add_prefix_glibc_to_package_name "$1")_*.deb 2>/dev/null'\''")}'); do
+            for filename in $(get_list_pkgs); do
               if ! aptly_upload_file "$filename"; then
-                exit 1
+                continue
               fi
 
               uploaded_files=true
