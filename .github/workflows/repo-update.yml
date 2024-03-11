@@ -215,7 +215,7 @@ jobs:
           listchanged=""
           for i in $(cat ../REBUILD-LIST); do
             if $(git log -n 1 --format=%B -- "${i}" | grep -q '^termux/auto-check-repo:'); then
-              if ! $(jq -r '.[] | "\(.user.login) \("/") \(.state) \("/") \(.title)"' ../LIST-ISSUES | grep -q "^termuxbot / open / \[AUTO-CHECK\]:.*$(dirname ${i})$"); then
+              if ! $(jq -r '.[] | "\(.user.login) \("/") \(.state) \("/") \(.title)"' ../LIST-ISSUES | grep -q "^termuxbot2 / open / \[AUTO-CHECK\]:.*$(dirname ${i})$"); then
                 commit "Create an issue on $(dirname ${i})"
                 GH_TOKEN="${{ secrets.TERMUXBOT2_TOKEN }}" gh issue create \
                   --title "[AUTO-CHECK]: failed to recompile $(dirname ${i})" \
