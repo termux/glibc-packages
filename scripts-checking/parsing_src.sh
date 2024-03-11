@@ -33,8 +33,9 @@ support_arch_pkg() {
 get_version_src() {
 	local source_file="$1"
 	(
+		local TERMUX_PKG_REVISION=0
 		source $source_file 2> /dev/null || true
-		if [ -n "$TERMUX_PKG_REVISION" ]; then
+		if [ "$TERMUX_PKG_REVISION" != "0" ] || [ "$TERMUX_PKG_VERSION" != "${TERMUX_PKG_VERSION/-/}" ]; then
 			echo "$TERMUX_PKG_VERSION-$TERMUX_PKG_REVISION"
 		else
 			echo "$TERMUX_PKG_VERSION"
