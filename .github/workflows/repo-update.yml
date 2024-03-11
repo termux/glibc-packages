@@ -5,19 +5,79 @@ on:
     - main
     paths:
     - '.github/workflows/repo-update.yml'
+    - 'scripts-checking/**'
+  pull_request:
+    paths:
+    - '.github/workflows/repo-update.yml'
+    - 'scripts-checking/**'
   schedule:
     - cron:  '0,30 0-23 * * *'
 
 jobs:
+  check-repo:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [aarch64, arm, i686, x86_64]
+      fail-fast: false
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1000
+    - name: Running a scan
+      run: ./scripts-checking/start.sh '${{ matrix.arch }}'
+    - name: Creating a result list
+      run: |
+        result_file="./result-checking/RESULT-${{ matrix.arch }}"
+        touch "${result_file}"
+        for i in PKG_NOT_FOUND VER_NOT_FOUND; do
+          path_log_file="./result-checking/${i}.${{ matrix.arch }}"
+          if [ -f "${path_log_file}" ]; then
+            cat "${path_log_file}" >> "${result_file}"
+          fi
+        done
+    - name: Store RESULT-* files
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: result-${{ matrix.arch }}-${{ github.sha }}
+        path: ./result-checking/RESULT-${{ matrix.arch }}
+        if-no-files-found: error
+
   update-repo:
+    needs: check-repo
     runs-on: ubuntu-latest
     steps:
     - name: Clone repository
-      run: |
-        git clone https://github.com/termux/glibc-packages.git
-        mv glibc-packages glibc-packages-mirror
+      run: git clone https://github.com/termux/glibc-packages.git glibc-packages-mirror
     - name: Clone root repository
       run: git clone https://github.com/termux-pacman/glibc-packages.git
+    - name: Get RESULT-* files
+      uses: actions/download-artifact@v4
+      with:
+        path: ./
+    - name: Creating a REBUILD-LIST
+      run: |
+        touch REBUILD-LIST
+        cd glibc-packages-mirror
+        for i in $(sort ../result-*/RESULT-* | uniq); do
+          BUILD_SOURCE=$(ls gpkg/${i}/build.sh 2> /dev/null) || true
+          if [ -z "${BUILD_SOURCE}" ]; then
+            BUILD_SOURCE=$(ls gpkg/*/${i}.subpackage.sh 2> /dev/null) || true
+            if [ -n "${BUILD_SOURCE}" ]; then
+              BUILD_SOURCE="$(dirname ${BUILD_SOURCE})/build.sh"
+            else
+              echo "Source package '${i}' was not found, skip"
+              continue
+            fi
+          fi
+          if ! $(grep -q "^${BUILD_SOURCE}$" ../REBUILD-LIST) && [ $(($(expr $(expr $(date +%s) - $(git log -n 1 --date=format:'%s' --format=%cd -- $(dirname ${BUILD_SOURCE}))) / 3600) > 7)) = 1 ]; then
+            echo "${BUILD_SOURCE}" >> ../REBUILD-LIST
+          fi
+        done
+        cd ..
+        cat REBUILD-LIST
     - name: Update repo
       run: |
         info() {
@@ -26,11 +86,19 @@ jobs:
         commit() {
           echo "-> $1"
         }
+        install_list_issues() {
+          if [ -f ../LIST-ISSUES ]; then
+            rm ../LIST-ISSUES
+          fi
+          curl --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -s -X GET -G \
+            "https://api.github.com/repos/${{ github.repository }}/issues" -o ../LIST-ISSUES
+        }
         
         # Edit
         info "Edit"
         cd glibc-packages-mirror
         rm -fr */
+        git checkout -- scripts-checking/
         cd ../glibc-packages
         cp -r * ../glibc-packages-mirror
         
@@ -42,6 +110,11 @@ jobs:
           dir_sp=(${i//// })
           if [[ ! $(echo "$list_files" | grep " ${dir_sp[0]}/${dir_sp[1]} ") ]]; then
             list_files+="${dir_sp[0]}/${dir_sp[1]} "
+            source_build="${dir_sp[0]}/${dir_sp[1]}/build.sh"
+            echo "${source_build}"
+            if $(grep -q '^'${source_build}'$' ../REBUILD-LIST); then
+              sed -i "/^${source_build////'\/'}$/d" ../REBUILD-LIST
+            fi
           fi
         done
         list_files=($list_files)
@@ -89,15 +162,18 @@ jobs:
         fi
         git config --global user.name "Termux Github Actions"
         git config --global user.email "contact@termux.dev"
-        git remote set-url origin "https://termuxbot2:${{ secrets.TERMUXBOT2_TOKEN }}@github.com/termux/glibc-packages.git"
+        git remote set-url origin "https://termuxbot2:${{ secrets.TERMUXBOT2_TOKEN }}@github.com/${{ github.repository }}.git"
         commit "Update system repo"
         git add .
         git reset README.md README-old.md repo.json gpkg-dev script gpkg
         {
           git commit -m "update repo contents"
-          git push origin main
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            git push origin main
+          fi
         } || true
         commit "Update repo packages"
+        install_list_issues
         for i in $sort_list_files; do
           i_sp=(${i//###/ })
           commit "    ${i_sp[1]}"
@@ -113,6 +189,58 @@ jobs:
             else
               git commit -m "$commit_file"
             fi
-            git push origin main
+            if [ "${{ github.event_name }}" != "pull_request" ]; then
+              git push origin main
+            fi
           } || true
+          for j in $(echo ${i_sp[1]} | sed 's/&&/ /g'); do
+            while read LINE; do
+              USER=$(echo "$LINE" | awk -F ' // ' '{printf $1}')
+              STATE=$(echo "$LINE" | awk -F ' // ' '{printf $2}')
+              TITLE=$(echo "$LINE" | awk -F ' // ' '{printf $4}')
+              if [ $STATE != "open" ] || [ $USER != "termuxbot2" ] || [[ $TITLE != "[AUTO-CHECK]: failed to recompile ${j}" ]]; then
+                continue
+              fi
+              NUMBER=$(echo "$LINE" | awk -F ' // ' '{printf $3}')
+              GH_TOKEN="${{ secrets.TERMUXBOT2_TOKEN }}" gh issue close ${NUMBER} \
+                -c "The package has been updated - https://github.com/${{ github.repository }}/commit/$(git log -n 1 --format=%H -- ${j})."
+              install_list_issues
+              break
+            done <<< $(jq -r '.[] | "\(.user.login) \("//") \(.state) \("//") \(.number) \("//") \(.title)"' ../LIST-ISSUES)
+          done
         done
+        
+        if [ -n "$(cat ../REBUILD-LIST)" ]; then
+          info "Rebuild packages"
+          listchanged=""
+          for i in $(cat ../REBUILD-LIST); do
+            if $(git log -n 1 --format=%B -- "${i}" | grep -q '^termux/auto-check-repo:'); then
+              if ! $(jq -r '.[] | "\(.user.login) \("/") \(.state) \("/") \(.title)"' ../LIST-ISSUES | grep -q "^termuxbot / open / \[AUTO-CHECK\]:.*$(dirname ${i})$"); then
+                commit "Create an issue on $(dirname ${i})"
+                GH_TOKEN="${{ secrets.TERMUXBOT2_TOKEN }}" gh issue create \
+                  --title "[AUTO-CHECK]: failed to recompile $(dirname ${i})" \
+                  --body "$(echo -e "This issue was automatically generated because the '$(dirname ${i})' package was not recompiled successfully.\n\nCommit by recompilation - https://github.com/${{ github.repository }}/commit/$(git log -n 2 --format=%H -- ${i} | tail -n1)")" \
+                  --label "auto recompilation failed" \
+                  --assignee Maxython
+              fi
+              continue
+            fi
+            echo "" >> ./${i}
+            git add ./${i}
+            git commit -m "rebuild($(dirname ${i})): auto check"
+            if [ "${{ github.event_name }}" != "pull_request" ]; then
+              git push origin main
+            fi
+            listchanged+=" ${i}"
+          done
+          if [ -n "${listchanged}" ]; then
+            for i in ${listchanged}; do
+              sed -i '$d' ./${i}
+              git add ./${i}
+            done
+            git commit -m "$(echo -e "termux/auto-check-repo: do not rebuild these packages again\n[skip ci]")"
+            if [ "${{ github.event_name }}" != "pull_request" ]; then
+              git push origin main
+            fi
+          fi
+        fi
