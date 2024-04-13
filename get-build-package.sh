@@ -2,7 +2,7 @@
 
 # Script that installs build-package.sh to compile glibc packages
 
-BRANCH="master"
+BRANCH="get_hash_from_file.py"
 
 git clone --depth 1 -b ${BRANCH} --single-branch https://github.com/termux/termux-packages.git
 
