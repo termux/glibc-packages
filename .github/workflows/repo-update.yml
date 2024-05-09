@@ -214,7 +214,9 @@ jobs:
           info "Rebuild packages"
           listchanged=""
           for i in $(cat ../REBUILD-LIST); do
-            if $(git log -n 1 --format=%B -- "${i}" | grep -q '^termux/auto-check-repo:'); then
+            if [[ $(git log -n 1 --format=%B -- "${i}") = "rebuild($(dirname ${i})): auto check by @termuxbot2" ]] && \
+              [[ $(git log -n 1 --format=%an -- "${i}") = "Termux Github Actions" ]] && \
+              [[ $(git log -n 1 --format=%ae -- "${i}") = "contact@termux.dev" ]]; then
               if ! $(jq -r '.[] | "\(.user.login) \("/") \(.state) \("/") \(.title)"' ../LIST-ISSUES | grep -q "^termuxbot2 / open / \[AUTO-CHECK\]:.*$(dirname ${i})$"); then
                 commit "Create an issue on $(dirname ${i})"
                 GH_TOKEN="${{ secrets.TERMUXBOT2_TOKEN }}" gh issue create \
@@ -227,20 +229,20 @@ jobs:
             fi
             echo "" >> ./${i}
             git add ./${i}
-            git commit -m "rebuild($(dirname ${i})): auto check"
-            if [ "${{ github.event_name }}" != "pull_request" ]; then
-              git push origin main
-            fi
             listchanged+=" ${i}"
           done
           if [ -n "${listchanged}" ]; then
-            for i in ${listchanged}; do
-              sed -i '$d' ./${i}
-              git add ./${i}
-            done
             git commit -m "$(echo -e "termux/auto-check-repo: do not rebuild these packages again\n[skip ci]")"
             if [ "${{ github.event_name }}" != "pull_request" ]; then
               git push origin main
             fi
+            for i in ${listchanged}; do
+              sed -i '$d' ./${i}
+              git add ./${i}
+              git commit -m "rebuild($(dirname ${i})): auto check by @termuxbot2"
+              if [ "${{ github.event_name }}" != "pull_request" ]; then
+                git push origin main
+              fi
+            done
           fi
         fi
