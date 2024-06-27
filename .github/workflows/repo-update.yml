@@ -165,7 +165,7 @@ jobs:
         git remote set-url origin "https://termuxbot2:${{ secrets.TERMUXBOT2_TOKEN }}@github.com/${{ github.repository }}.git"
         commit "Update system repo"
         git add .
-        git reset README.md README-old.md repo.json gpkg-dev script gpkg
+        git reset README.md README-old.md repo.json cgct scripts-cgct gpkg
         {
           git commit -m "update repo contents"
           if [ "${{ github.event_name }}" != "pull_request" ]; then
