@@ -17,5 +17,11 @@
     "distribution": "x11",
     "component": "main",
     "url": "https://packages-cf.termux.dev/apt/termux-x11"
+  },
+  "root-packages": {
+    "name": "termux-root",
+    "distribution": "root",
+    "component": "stable",
+    "url": "https://packages-cf.termux.dev/apt/termux-root"
   }
 }
