@@ -94,4 +94,3 @@ termux_step_post_make_install() {
 		-i "$TERMUX_PREFIX/etc/apache2/httpd.conf"
 	echo -e "#\n#  Load config files from the config directory 'conf.d'.\n#\nInclude etc/apache2/conf.d/*.conf" >> $TERMUX_PREFIX/etc/apache2/httpd.conf
 }
-
