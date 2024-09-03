@@ -3,7 +3,9 @@ clean.sh
 
 /packages/
 /x11-packages/
+/root-packages/
 /scripts/
+/ndk-patches/
 /output/
 /termux-packages/
 /result-checking/
