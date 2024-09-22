@@ -248,13 +248,13 @@ jobs:
         GPG_PASSPHRASE=${{ secrets.GPG_PASSPHRASE }}
 
         source scripts/aptly_api.sh
-        source scripts/utils/package/package.sh
+        source scripts/utils/termux/package/termux_package.sh
 
         get_list_pkgs() {
           for i in $(cat debs/built_${REPOSITORY_NAME}_packages.txt | sed -E 's/(..*)/\1\n\1-static/g'); do
             local pkgname="${i}"
-            if ! package__is_package_name_have_glibc_prefix "$pkgname"; then
-              pkgname=$(package__add_prefix_glibc_to_package_name "$pkgname")
+            if ! termux_package__is_package_name_have_glibc_prefix "$pkgname"; then
+              pkgname=$(termux_package__add_prefix_glibc_to_package_name "$pkgname")
             fi
             ls debs/${pkgname}_*.deb 2>/dev/null
           done
