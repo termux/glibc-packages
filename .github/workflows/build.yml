@@ -256,7 +256,7 @@ jobs:
             if ! termux_package__is_package_name_have_glibc_prefix "$pkgname"; then
               pkgname=$(termux_package__add_prefix_glibc_to_package_name "$pkgname")
             fi
-            ls debs/${pkgname}_*.deb 2>/dev/null
+            find debs/ -name "${pkgname}_*.deb"
           done
         }
 
