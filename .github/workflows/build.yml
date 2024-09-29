@@ -33,7 +33,12 @@ jobs:
         fetch-depth: 1000
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3.2.0
+      run: |
+        sudo apt update
+        yes | sudo apt install qemu-user qemu-user-static binfmt-support
+        sudo update-binfmts --enable qemu-aarch64
+        sudo update-binfmts --enable qemu-arm
+        docker run --rm --privileged tonistiigi/binfmt --install all
 
     - name: Get files from termux-packages repository
       run: ./get-build-package.sh
