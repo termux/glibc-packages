@@ -15,19 +15,39 @@ find_build_source() {
 }
 
 support_arch_pkg() {
-	local pkgname="$1"
-	local source_file
 	(
-		source_file="$(dirname ${2})/${pkgname}.subpackage.sh"
-		if [ -f "${source_file}" ]; then
-			source "${source_file}" 2> /dev/null || true
-			! ([ -n "${TERMUX_SUBPKG_EXCLUDED_ARCHES-}" ] && grep -q "$ARCH" <<< "${TERMUX_SUBPKG_EXCLUDED_ARCHES}")
-		else
-			source "${2}" 2> /dev/null || true
-			! ([ -n "${TERMUX_PKG_BLACKLISTED_ARCHES-}" ] && grep -q "$ARCH" <<< "${TERMUX_PKG_BLACKLISTED_ARCHES}")
+		TERMUX_PKG_PLATFORM_INDEPENDENT=false
+		TERMUX_PKG_BLACKLISTED_ARCHES=""
+		TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
+		TERMUX_SUBPKG_EXCLUDED_ARCHES=""
+
+		source "${2}" 2> /dev/null || true
+
+		subsrc="$(dirname ${2})/${1}.subpackage.sh"
+		if [ -f "${subsrc}" ]; then
+			source "${subsrc}" 2> /dev/null || true
+			if [ "${TERMUX_SUBPKG_PLATFORM_INDEPENDENT}" = "true" ]; then
+				return 0
+			fi
+			if __sap_arch_here "${TERMUX_SUBPKG_EXCLUDED_ARCHES}"; then
+				return 1
+			fi
 		fi
-		[ "$?" = "0" ] && echo "true" || echo "false"
+
+		if [ "${TERMUX_PKG_PLATFORM_INDEPENDENT}" = "true" ]; then
+			return 0
+		fi
+		if __sap_arch_here "${TERMUX_PKG_BLACKLISTED_ARCHES}"; then
+			return 1
+		fi
+		return 0
 	)
+	[ "$?" = "0" ] && echo "true" || echo "false"
+}
+
+__sap_arch_here() {
+	sed -e 's/,//g' -e 's/ /\n/g' <<< "${1}" | grep -q "^${ARCH}$"
+	return $?
 }
 
 get_version_src() {
