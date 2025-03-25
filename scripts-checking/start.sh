@@ -4,6 +4,8 @@ PWD=$(pwd)
 ARCH=$1
 source $PWD/scripts-checking/init.sh
 
+set -e
+
 list_pkgs_in_dir() {
 	for i in $(ls $PATH_REPO); do
 		echo $i
