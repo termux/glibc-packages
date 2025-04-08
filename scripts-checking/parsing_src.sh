@@ -17,7 +17,7 @@ find_build_source() {
 support_arch_pkg() {
 	(
 		TERMUX_PKG_PLATFORM_INDEPENDENT=false
-		TERMUX_PKG_BLACKLISTED_ARCHES=""
+		TERMUX_PKG_EXCLUDED_ARCHES=""
 		TERMUX_SUBPKG_PLATFORM_INDEPENDENT=false
 		TERMUX_SUBPKG_EXCLUDED_ARCHES=""
 
@@ -37,7 +37,7 @@ support_arch_pkg() {
 		if [ "${TERMUX_PKG_PLATFORM_INDEPENDENT}" = "true" ]; then
 			return 0
 		fi
-		if __sap_arch_here "${TERMUX_PKG_BLACKLISTED_ARCHES}"; then
+		if __sap_arch_here "${TERMUX_PKG_EXCLUDED_ARCHES}"; then
 			return 1
 		fi
 		return 0
