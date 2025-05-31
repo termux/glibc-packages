@@ -11,4 +11,3 @@ termux_step_make_install() {
 	mkdir -p ${TERMUX__PREFIX__LIB_DIR}
 	cp -r ${CGCT_DIR}/${TERMUX_ARCH}/lib/lib* ${TERMUX__PREFIX__LIB_DIR}
 }
-
