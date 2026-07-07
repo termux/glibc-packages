@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Clone repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         fetch-depth: 1000
     - name: Running a scan
@@ -39,7 +39,7 @@ jobs:
         done
     - name: Store RESULT-* files
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7.0.1
       with:
         name: result-${{ matrix.arch }}-${{ github.sha }}
         path: ./result-checking/RESULT-${{ matrix.arch }}
@@ -54,7 +54,7 @@ jobs:
     - name: Clone root repository
       run: git clone https://github.com/termux-pacman/glibc-packages.git
     - name: Get RESULT-* files
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8.0.1
       with:
         path: ./
     - name: Creating a REBUILD-LIST
@@ -87,13 +87,20 @@ jobs:
           echo "-> $1"
         }
         install_list_issues() {
-          if [ -f ../LIST-ISSUES ]; then
-            rm ../LIST-ISSUES
-          fi
-          curl --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -s -X GET -G \
-            "https://api.github.com/repos/${{ github.repository }}/issues" -o ../LIST-ISSUES
+          while true; do
+            if [ -f ../LIST-ISSUES ]; then
+              rm ../LIST-ISSUES
+            fi
+            curl --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -s -X GET -G \
+              "https://api.github.com/repos/${{ github.repository }}/issues?state=all" -o ../LIST-ISSUES
+            if [ "$(jq 'length' ../LIST-ISSUES)" = "0" ]; then
+              sleep 5
+              continue
+            fi
+            break
+          done
         }
-        
+
         # Edit
         info "Edit"
         cd glibc-packages-mirror
@@ -101,7 +108,7 @@ jobs:
         git checkout -- scripts-checking/
         cd ../glibc-packages
         cp -r * ../glibc-packages-mirror
-        
+
         # Get list pkg
         info "Get list pkg"
         cd ../glibc-packages-mirror
@@ -118,7 +125,7 @@ jobs:
           fi
         done
         list_files=($list_files)
-        
+
         # Sort list pkg
         info "Sort list pkg"
         cd ../glibc-packages
@@ -152,7 +159,7 @@ jobs:
           fi
           sort_list_files+="${list_files[$index]}"
         done
-        
+
         # Start upload
         info "Start upload"
         cd ../glibc-packages-mirror
@@ -209,7 +216,7 @@ jobs:
             done <<< $(jq -r '.[] | "\(.user.login) \("//") \(.state) \("//") \(.number) \("//") \(.title)"' ../LIST-ISSUES)
           done
         done
-        
+
         if [ -n "$(cat ../REBUILD-LIST)" ]; then
           info "Rebuild packages"
           listchanged=""

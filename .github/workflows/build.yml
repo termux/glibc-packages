@@ -14,7 +14,7 @@ on:
       packages:
         description: "A space-separated names of packages selected for rebuilding"
         required: true
-        
+
 permissions: {} # none
 
 jobs:
@@ -28,14 +28,19 @@ jobs:
       fail-fast: false
     steps:
     - name: Clone repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         fetch-depth: 1000
 
     - name: Set up QEMU
       run: |
-        sudo apt update
-        yes | sudo apt install qemu-user qemu-user-static binfmt-support
+        while true; do
+          {
+            sudo apt update
+            yes | sudo apt install qemu-user qemu-user-static binfmt-support
+          } || continue
+          break
+        done
         sudo update-binfmts --enable qemu-aarch64
         sudo update-binfmts --enable qemu-arm
         docker run --rm --privileged tonistiigi/binfmt --install all
@@ -223,7 +228,7 @@ jobs:
         find debs -type f -name "*.deb" -exec sha256sum "{}" \; | sort -k2
     - name: Store *.deb files
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7.0.1
       with:
         name: debs-${{ matrix.target_arch }}-${{ github.sha }}
         path: ./artifacts
@@ -237,9 +242,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Clone repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Get *.deb files
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8.0.1
       with:
         path: ./
     - name: Get files from termux-packages repository
